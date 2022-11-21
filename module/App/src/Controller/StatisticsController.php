@@ -5,8 +5,6 @@ namespace App\Controller;
 use DateTime;
 use SocialPost\Service\SocialPostService;
 use Statistics\Builder\ParamsBuilder;
-use Statistics\Enum\StatsEnum;
-use Statistics\Extractor\StatisticsToExtractor;
 use Statistics\Service\StatisticsService;
 
 /**
@@ -16,13 +14,6 @@ use Statistics\Service\StatisticsService;
  */
 class StatisticsController extends Controller
 {
-
-    private const STAT_LABELS = [
-        StatsEnum::TOTAL_POSTS_PER_WEEK         => 'Total posts split by week',
-        StatsEnum::AVERAGE_POST_NUMBER_PER_USER => 'Average number of posts per user in a given month',
-        StatsEnum::AVERAGE_POST_LENGTH          => 'Average character length/post in a given month',
-        StatsEnum::MAX_POST_LENGTH              => 'Longest post by character length in a given month',
-    ];
 
     /**
      * @var StatisticsService
@@ -35,25 +26,17 @@ class StatisticsController extends Controller
     private $socialService;
 
     /**
-     * @var StatisticsToExtractor
-     */
-    private $extractor;
-
-    /**
      * StatisticsController constructor.
      *
      * @param StatisticsService     $statsService
      * @param SocialPostService     $socialService
-     * @param StatisticsToExtractor $extractor
      */
     public function __construct(
         StatisticsService $statsService,
         SocialPostService $socialService,
-        StatisticsToExtractor $extractor
     ) {
         $this->statsService  = $statsService;
         $this->socialService = $socialService;
-        $this->extractor     = $extractor;
     }
 
     /**
@@ -69,7 +52,7 @@ class StatisticsController extends Controller
             $stats = $this->statsService->calculateStats($posts, $params);
 
             $response = [
-                'stats' => $this->extractor->extract($stats, self::STAT_LABELS),
+                'stats' => $stats->toArray(),
             ];
         } catch (\Throwable $throwable) {
             http_response_code(500);

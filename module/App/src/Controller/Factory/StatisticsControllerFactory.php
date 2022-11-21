@@ -5,7 +5,6 @@ namespace App\Controller\Factory;
 use App\Controller\ControllerInterface;
 use App\Controller\StatisticsController;
 use SocialPost\Service\Factory\SocialPostServiceFactory;
-use Statistics\Extractor\StatisticsToExtractor;
 use Statistics\Service\Factory\StatisticsServiceFactory;
 
 /**
@@ -25,6 +24,6 @@ class StatisticsControllerFactory implements ControllerFactoryInterface
 
         $socialService = SocialPostServiceFactory::create();
 
-        return new StatisticsController($statsService, $socialService, new StatisticsToExtractor());
+        return new StatisticsController($statsService, $socialService);
     }
 }

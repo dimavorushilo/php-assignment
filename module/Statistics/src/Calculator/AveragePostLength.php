@@ -4,6 +4,7 @@ namespace Statistics\Calculator;
 
 use SocialPost\Dto\SocialPostTo;
 use Statistics\Dto\StatisticsTo;
+use Statistics\Enum\StatsEnum;
 
 /**
  * Class Calculator
@@ -14,6 +15,7 @@ class AveragePostLength extends AbstractCalculator
 {
 
     protected const UNITS = 'characters';
+    protected const LABEL = 'Average character length/post in a given month';
 
     /**
      * @var int
@@ -44,5 +46,13 @@ class AveragePostLength extends AbstractCalculator
             : 0;
 
         return (new StatisticsTo())->setValue(round($value,2));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatisticsType(): string
+    {
+        return StatsEnum::AVERAGE_POST_LENGTH;
     }
 }

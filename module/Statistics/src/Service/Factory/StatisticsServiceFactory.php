@@ -2,7 +2,11 @@
 
 namespace Statistics\Service\Factory;
 
+use Statistics\Calculator\AveragePostLength;
+use Statistics\Calculator\AverageUserPost;
 use Statistics\Calculator\Factory\StatisticsCalculatorFactory;
+use Statistics\Calculator\MaxPostLength;
+use Statistics\Calculator\TotalPostsPerWeek;
 use Statistics\Service\StatisticsService;
 
 /**
@@ -18,7 +22,13 @@ class StatisticsServiceFactory
      */
     public static function create(): StatisticsService
     {
-        $calculatorFactory = new StatisticsCalculatorFactory();
+        $calculators = [
+            new AveragePostLength(),
+            new MaxPostLength(),
+            new TotalPostsPerWeek(),
+            new AverageUserPost(),
+        ];
+        $calculatorFactory = new StatisticsCalculatorFactory($calculators);
 
         return new StatisticsService($calculatorFactory);
     }
