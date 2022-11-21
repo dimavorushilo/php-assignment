@@ -4,6 +4,7 @@ namespace Statistics\Calculator;
 
 use SocialPost\Dto\SocialPostTo;
 use Statistics\Dto\StatisticsTo;
+use Statistics\Enum\StatsEnum;
 
 /**
  * Class LongestPostCalculator
@@ -14,6 +15,7 @@ class MaxPostLength extends AbstractCalculator
 {
 
     protected const UNITS = 'characters';
+    protected const LABEL = 'Longest post by character length in a given month';
 
     /**
      * @var int
@@ -38,5 +40,13 @@ class MaxPostLength extends AbstractCalculator
     protected function doCalculate(): StatisticsTo
     {
         return (new StatisticsTo())->setValue($this->maxPostLength);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatisticsType(): string
+    {
+        return StatsEnum::MAX_POST_LENGTH;
     }
 }

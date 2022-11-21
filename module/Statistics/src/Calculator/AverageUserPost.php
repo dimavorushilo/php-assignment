@@ -3,47 +3,45 @@
 namespace Statistics\Calculator;
 
 use SocialPost\Dto\SocialPostTo;
+use Statistics\Dto\AverageUserPostsStatistic;
 use Statistics\Dto\StatisticsTo;
-use Statistics\Dto\TotalPostsPerWeekStatistic;
 use Statistics\Enum\StatsEnum;
 
 /**
- * Class TotalPosts
+ * Average number of posts per user per month
  *
  * @package Statistics\Calculator
  */
-class TotalPostsPerWeek extends AbstractCalculator
+class AverageUserPost extends AbstractCalculator
 {
 
     protected const UNITS = 'posts';
-    protected const LABEL = 'Total posts split by week';
+    protected const LABEL = 'Average number of posts per user in a given month';
 
     /**
      * @var array
      */
-    private $totals = [];
+    private array $userPosts = [];
 
     /**
-     * @param SocialPostTo $postTo
+     * @inheritDoc
      */
     protected function doAccumulate(SocialPostTo $postTo): void
     {
-        $key = $postTo->getDate()->format('\W\e\e\k W, Y');
-
-        $this->totals[$key] = ($this->totals[$key] ?? 0) + 1;
+        $this->userPosts[$postTo->getAuthorId()] = ($this->userPosts[$postTo->getAuthorId()] ?? 0) + 1;
     }
 
     /**
-     * @return StatisticsTo
+     * @inheritDoc
      */
     protected function doCalculate(): StatisticsTo
     {
         $stats = new StatisticsTo();
-        foreach ($this->totals as $splitPeriod => $total) {
-            $child = (new TotalPostsPerWeekStatistic())
+        foreach ($this->userPosts as $userId => $totalPosts) {
+            $child = (new AverageUserPostsStatistic())
                 ->setName($this->parameters->getStatName())
-                ->setSplitPeriod($splitPeriod)
-                ->setValue($total)
+                ->setValue($totalPosts)
+                ->setUserId($userId)
                 ->setUnits(self::UNITS);
 
             $stats->addChild($child);
@@ -57,6 +55,6 @@ class TotalPostsPerWeek extends AbstractCalculator
      */
     public function getStatisticsType(): string
     {
-        return StatsEnum::TOTAL_POSTS_PER_WEEK;
+        return StatsEnum::AVERAGE_POST_NUMBER_PER_USER;
     }
 }

@@ -15,6 +15,7 @@ abstract class AbstractCalculator implements CalculatorInterface
 {
 
     protected const UNITS = null;
+    protected const LABEL = null;
 
     /**
      * @var ParamsTo
@@ -52,6 +53,7 @@ abstract class AbstractCalculator implements CalculatorInterface
     {
         return $this->doCalculate()
                     ->setName($this->parameters->getStatName())
+                    ->setLabel(static::LABEL)
                     ->setUnits(static::UNITS);
     }
 
@@ -86,4 +88,9 @@ abstract class AbstractCalculator implements CalculatorInterface
      * @return StatisticsTo
      */
     abstract protected function doCalculate(): StatisticsTo;
+
+    /**
+     * @return string
+     */
+    abstract public function getStatisticsType(): string;
 }

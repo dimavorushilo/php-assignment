@@ -7,7 +7,7 @@ namespace Statistics\Dto;
  *
  * @package Statistics\Dto
  */
-class StatisticsTo
+class StatisticsTo implements Extractable
 {
 
     /**
@@ -23,12 +23,12 @@ class StatisticsTo
     /**
      * @var string
      */
-    private $splitPeriod;
+    private $units;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $units;
+    private $label;
 
     /**
      * @var StatisticsTo[]
@@ -98,26 +98,6 @@ class StatisticsTo
     /**
      * @return string|null
      */
-    public function getSplitPeriod(): ?string
-    {
-        return $this->splitPeriod;
-    }
-
-    /**
-     * @param string $splitPeriod
-     *
-     * @return $this
-     */
-    public function setSplitPeriod(string $splitPeriod): self
-    {
-        $this->splitPeriod = $splitPeriod;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
     public function getUnits(): ?string
     {
         return $this->units;
@@ -133,5 +113,50 @@ class StatisticsTo
         $this->units = $units;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function setLabel(string $label): self
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(): array
+    {
+        return [
+            'name'  => $this->getName(),
+            'label' => $this->getLabel(),
+            'value' => $this->getValue(),
+            'units' => $this->getUnits(),
+            'children' => $this->childrenToArray()
+        ];
+    }
+
+    private function childrenToArray(): ?array
+    {
+        if (count($this->getChildren())) {
+            return array_map(static function (StatisticsTo $item) {
+                return $item->toArray();
+            }, $this->getChildren());
+        }
+
+        return null;
     }
 }

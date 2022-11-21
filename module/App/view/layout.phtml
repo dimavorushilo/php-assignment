@@ -26,6 +26,9 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 <script>
+    const AVERAGE_POST_LENGTH = 'total-posts-per-week';
+    const AVERAGE_POST_NUMBER_PER_USER = 'average-posts-per-user';
+
     $(document).ready(function () {
         $('#retrieve-stats').click(function () {
             $.get('/statistics?month=' + $('#month').val(),
@@ -43,26 +46,28 @@
     }
 
     function appendRow(stats) {
-        if (stats.value !== null && stats.splitPeriod === null) {
-            $('#stats-table').append(
-                '<tr><td>' + stats.label + '</td>' +
-                '<td>' + stats.value + ' ' + stats.units + '</td></tr>'
-            );
-        }
+        let htmlBlockRow = '';
 
-        if (stats.value !== null && stats.splitPeriod !== null) {
-            $('#stats-table').append(
-                '<tr><td class="text-right">' + stats.splitPeriod + '</td>' +
-                '<td>' + stats.value + ' ' + stats.units + '</td></tr>'
-            );
+        if (stats.label !== null) {
+            if (stats.value !== null) {
+                htmlBlockRow = '<tr><td>' + stats.label + '</td>' +
+                    '<td>' + stats.value + ' ' + stats.units + '</td></tr>';
+            } else {
+                htmlBlockRow = '<tr><td colspan="2">' + stats.label + '</td></tr>';
+            }
+        } else {
+            switch(stats.name) {
+                case AVERAGE_POST_LENGTH:
+                    htmlBlockRow = '<tr><td class="text-right">' + stats.splitPeriod + '</td>' +
+                        '<td>' + stats.value + ' ' + stats.units + '</td></tr>';
+                    break;
+                case AVERAGE_POST_NUMBER_PER_USER:
+                    htmlBlockRow = '<tr><td class="text-right">' + stats.userId + '</td>' +
+                        '<td>' + stats.value + ' ' + stats.units + '</td></tr>';
+                    break;
+            }
         }
-
-        if (stats.value === null && stats.label !== null) {
-            $('#stats-table').append(
-                '<tr><td colspan="2">' + stats.label + '</td></tr>'
-            );
-        }
-
+        $('#stats-table').append(htmlBlockRow);
 
         if (!(stats.children && stats.children.length)) {
             return;
